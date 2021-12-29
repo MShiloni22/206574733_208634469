@@ -31,7 +31,7 @@ for s in s_list:
     MIC_t = np.zeros((s, 1024))
     train_copy = np.matrix(train)
     for i in range(s):
-        U, _, _ = np.linalg.svd(train_copy, full_matrices=True, compute_uv=True)
+        U, _, _ = np.linalg.svd(train_copy, full_matrices=False, compute_uv=True)
         next_u = np.transpose(U)[0]
         MIC_t[i] = next_u
         train_copy = np.matmul((np.identity(1024) - (np.matmul(np.transpose(next_u), next_u))), train_copy)
