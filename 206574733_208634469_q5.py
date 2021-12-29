@@ -8,7 +8,9 @@ def unpickle(file):
         dict = pickle.load(fo, encoding='bytes')
     return dict
 
-files_list = [r"C:\Users\mshil\PycharmProjects\Semester_03\AlgebricMethods_Course\206574733_208634469\cifar-10-batches-py\data_batch_1"]
+# nimrod and matan have different paths :)
+files_list = [r"C:\Users\nimro\PycharmProjects\algebric methods 095295\206574733_208634469\cifar-10-batches-py\data_batch_1"]
+# files_list = [r"C:\Users\mshil\PycharmProjects\Semester_03\AlgebricMethods_Course\206574733_208634469\cifar-10-batches-py\data_batch_1"]
 s_list = [5]
 k_list = [5]
 train_list = []
