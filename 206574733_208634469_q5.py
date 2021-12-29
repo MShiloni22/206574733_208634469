@@ -8,6 +8,7 @@ def unpickle(file):
         dict = pickle.load(fo, encoding='bytes')
     return dict
 
+
 # if it works, we need to add all other batch files to the list
 files_list = [r"C:\Users\mshil\PycharmProjects\Semester_03\AlgebricMethods_Course\206574733_208634469\cifar-10-batches-py\data_batch_1"]
 s_list = [5]
@@ -18,11 +19,12 @@ reduced_data_dict = {} # will hold the reduced data for knn for each s value
 # step1: turning all data to grayscale, arranging data in one matrix
 for file in files_list:
     my_dict = unpickle(file)
-    img = my_dict[b'data']
-    # img contains all the images in a batch now. Single image can be
+    all_data = my_dict[b'data']
+    all_labels = my_dict[b'labels']
+    # all_data contains all the images in a batch now. Single image can be
     # accessed by the number of the row containing it
-    for i in range(len(img)):
-        single_img = np.array(img[i])
+    for i in range(len(all_data)):
+        single_img = np.array(all_data[i])
         single_img_reshaped = np.transpose(np.reshape(single_img, (3, 32, 32)), (1, 2, 0))
         image = Image.fromarray(single_img_reshaped.astype('uint8'))
         image = image.convert("L")
