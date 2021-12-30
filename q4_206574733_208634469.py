@@ -3,8 +3,10 @@ import numpy as np
 
 
 def run():
-    image = Image.open("Tel_Aviv.jpg")
+    image = Image.open("world_map.jpg")
     pix = np.array(image)
+
+    # create and fill the RGB matrices
     (rows, cols, depth) = pix.shape
     rows = int(rows)
     cols = int(cols)
@@ -23,10 +25,10 @@ def run():
     k_list = [5, 80, 160, 200, 400]
     errors = {}
     for k in k_list:
-        rgb_k_list = []
-        for j in range(len(rgb_list)):
-            M = rgb_list[j]
+        rgb_k_list = []  # here we will save the approximations of Reds, Greens and Blues
+        for M in rgb_list:
             U, S, V = np.linalg.svd(M, full_matrices=True, compute_uv=True)
+            # build the k-rank approximations for U, S, V
             Uk_t = np.zeros((k, rows))
             Sk = np.zeros((k, k))
             Vk_t = np.zeros((k, cols))
@@ -35,8 +37,11 @@ def run():
                 Vk_t[i] = V[i]
                 Sk[i][i] = S[i]
             Uk = np.transpose(Uk_t)
+            # build the k-rank approximations for M
             Mk = np.matmul(Uk, np.matmul(Sk, Vk_t))
             rgb_k_list.append(Mk)
+
+        # union approximations of Reds, Greens and Blues to form a new picture
         pixels = np.zeros((rows, cols, depth)).astype(np.uint8)
         for i in range(rows):
             for j in range(cols):
@@ -45,6 +50,9 @@ def run():
                 pixels[i][j][2] = rgb_k_list[2][i][j]
         new_image = Image.fromarray(pixels)
         new_image.show()
+
+        # save the relative error of the Reds matrix, for each value k
         errors[k] = np.linalg.norm(reds - rgb_k_list[0], 'fro') ** 2 / np.linalg.norm(reds, 'fro') ** 2
-    for x in k_list:
-        print(errors[x])
+
+    for k in k_list:
+        print(f"for k={k}: relative error is {errors[k]}")
