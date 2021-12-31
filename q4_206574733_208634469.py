@@ -3,7 +3,7 @@ import numpy as np
 
 
 def run():
-    image = Image.open("world_map.jpg")
+    image = Image.open("q4_images/world_map_original.jpg")
     pix = np.array(image)
 
     # create and fill the RGB matrices
@@ -22,7 +22,7 @@ def run():
             blues[i][j] = pix[i][j][2]
 
     rgb_list = [reds, greens, blues]
-    k_list = [5, 80, 160, 200, 400]
+    k_list = [5, 80, 160, 320, 640]
     errors = {}
     for k in k_list:
         rgb_k_list = []  # here we will save the approximations of Reds, Greens and Blues
@@ -49,7 +49,7 @@ def run():
                 pixels[i][j][1] = rgb_k_list[1][i][j]
                 pixels[i][j][2] = rgb_k_list[2][i][j]
         new_image = Image.fromarray(pixels)
-        new_image.show()
+        new_image.save("C:/Users/mshil/PycharmProjects/Semester_03/AlgebricMethods_Course/206574733_208634469/q4_images/world_map_"+str(k)+".jpg")
 
         # save the relative error of the Reds matrix, for each value k
         errors[k] = np.linalg.norm(reds - rgb_k_list[0], 'fro') ** 2 / np.linalg.norm(reds, 'fro') ** 2
