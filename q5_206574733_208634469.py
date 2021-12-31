@@ -10,9 +10,10 @@ def run(reduce_rank=True):
     :param: reduce_rank: boolean parameter to determine if to reduce the rank of the points or not
     :return: None.
     """
-    for k in range(3, 10, 2):
+    print("Using PCA:") if reduce_rank else print("Without PCA")
+    for k in [200]:
         if reduce_rank:
-            for s in range(5, 21, 5):
+            for s in [5, 10, 50, 100, 200]:
                 KNN(k, reduce_rank, s)
         else:
             KNN(k)
@@ -44,14 +45,14 @@ def KNN(k, reduced_rank=False, s=1):
         for t_point in test_points_reduced_rank:
             predictions.append(predict_label(t_point, train_points_reduced_rank, train_labels, k))
         error_rate = calculate_error_rate(test_points_reduced_rank, test_labels, predictions)
+        print(f"for k = {k}, s = {s}, the error rate is: {error_rate}")
 
     else:
         # predict the label and calculate error rate
         for t_point in test_points:
             predictions.append(predict_label(t_point, train_points, train_labels, k))
         error_rate = calculate_error_rate(test_points, test_labels, predictions)
-
-    print(f"for k = {k}, s = {s}, the error rate is: {error_rate}")
+        print(f"for k = {k}, the error rate is: {error_rate}")
 
 
 def predict_label(test_point, train_set, train_label, k):
@@ -63,9 +64,8 @@ def predict_label(test_point, train_set, train_label, k):
     :param k: number of nearest neighbors
     :return: the predicted label for test_point
     """
-    distances = {}  # dictionary of each point from train set and its distance from the given test_point
-    for index, vector in enumerate(train_set):
-        distances = {index: np.linalg.norm(vector - test_point)}
+    # dictionary of each point from train set and its distance from the given test_point
+    distances = {point_index: np.linalg.norm(p - test_point) for point_index, p in enumerate(train_set)}
     sorted_indices = sorted(distances.keys(), key=lambda x: distances[x])
     k_closest_neighbors_labels = [train_label[i] for i in sorted_indices[0:k]]
     label = max(set(k_closest_neighbors_labels), key=k_closest_neighbors_labels.count)
@@ -104,7 +104,10 @@ def load_data():
     batch = unpickle(path)
     test_set = (batch[b'data'].reshape((len(batch[b'data']), 3, 32, 32)).transpose(0, 2, 3, 1)).astype('float32')
     test_labels = batch[b'labels']
-    return train_set, train_labels, test_set, test_labels
+    # Please note that due to unreasonable run time we decided in order to answer the questions
+    # to take only 1000 points from the training set and 100 points from the test.
+    # return train_set, train_labels, test_set, test_labels
+    return train_set[:1000, :], train_labels[:1000], test_set[:100, :], test_labels[:100]
 
 
 def grayscale(set):
@@ -136,7 +139,8 @@ def calculate_error_rate(test_points, test_labels, predictions):
     """
     test_size = test_points.shape[0]
     missed = 0
-    for i, lbl in enumerate(test_labels):
-        missed = missed + 1 if lbl != predictions[i] else missed
+    for i, y in enumerate(test_labels):
+        if y != predictions[i]:
+            missed += 1
     error_rate = missed / test_size
     return error_rate
