@@ -11,10 +11,11 @@ def run(reduce_rank=True):
     :return: None.
     """
     print("Using PCA:") if reduce_rank else print("Without PCA")
-    for k in [200]:
+    for k in [10, 100, 200]:
         if reduce_rank:
             for s in [5, 10, 50, 100, 200]:
                 KNN(k, reduce_rank, s)
+            print("***************************")
         else:
             KNN(k)
 
@@ -87,7 +88,7 @@ def load_data():
              test_labels - labels of test set
     """
     for i in range(1, 6):
-        path = f"C:/Users/nimro/PycharmProjects/algebric methods 095295/206574733_208634469/cifar-10-batches-py/data_batch_{i}"
+        path = f"C:/Users/mshil/PycharmProjects/Semester_03/AlgebricMethods_Course/206574733_208634469/cifar-10-batches-py/data_batch_{i}"
         batch = unpickle(path)
         if i == 1:
             train_set = (batch[b'data'].reshape((len(batch[b'data']), 3, 32, 32)).transpose(0, 2, 3, 1)).astype(
@@ -100,14 +101,14 @@ def load_data():
             train_set = np.concatenate((train_set, train_set_tmp), axis=0)
             train_labels = np.concatenate((train_labels, train_lbls_tmp), axis=0)
 
-    path = f"C:/Users/nimro/PycharmProjects/algebric methods 095295/206574733_208634469/cifar-10-batches-py/test_batch"
+    path = f"C:/Users/mshil/PycharmProjects/Semester_03/AlgebricMethods_Course/206574733_208634469/cifar-10-batches-py/test_batch"
     batch = unpickle(path)
     test_set = (batch[b'data'].reshape((len(batch[b'data']), 3, 32, 32)).transpose(0, 2, 3, 1)).astype('float32')
     test_labels = batch[b'labels']
     # Please note that due to unreasonable run time we decided in order to answer the questions
-    # to take only 1000 points from the training set and 100 points from the test.
+    # to take only 5000 points from the training set and 1000 points from the test.
     # return train_set, train_labels, test_set, test_labels
-    return train_set[:1000, :], train_labels[:1000], test_set[:100, :], test_labels[:100]
+    return train_set[::10, :], train_labels[::10], test_set[::10, :], test_labels[::10]
 
 
 def grayscale(set):
