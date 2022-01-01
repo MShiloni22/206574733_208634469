@@ -49,7 +49,8 @@ def run():
                 pixels[i][j][1] = rgb_k_list[1][i][j]
                 pixels[i][j][2] = rgb_k_list[2][i][j]
         new_image = Image.fromarray(pixels)
-        new_image.save("C:/Users/mshil/PycharmProjects/Semester_03/AlgebricMethods_Course/206574733_208634469/q4_images/world_map_"+str(k)+".jpg")
+        # new_image.save("C:/Users/mshil/PycharmProjects/Semester_03/AlgebricMethods_Course/206574733_208634469/q4_images/world_map_"+str(k)+".jpg")
+        new_image.show()
 
         # save the relative error of the Reds matrix, for each value k
         errors[k] = np.linalg.norm(reds - rgb_k_list[0], 'fro') ** 2 / np.linalg.norm(reds, 'fro') ** 2

@@ -33,6 +33,8 @@ def KNN(k, reduced_rank=False, s=1):
     train_points, train_labels, test_points, test_labels = load_data()  # data in rows
     train_points = grayscale(train_points)
     test_points = grayscale(test_points)
+    train_points = centralize_data(train_points)
+    test_points = centralize_data(test_points)
 
     predictions = []
     if reduced_rank:
@@ -88,7 +90,8 @@ def load_data():
              test_labels - labels of test set
     """
     for i in range(1, 6):
-        path = f"C:/Users/mshil/PycharmProjects/Semester_03/AlgebricMethods_Course/206574733_208634469/cifar-10-batches-py/data_batch_{i}"
+        path = f"C:/Users/nimro\PycharmProjects/algebric methods 095295/206574733_208634469/cifar-10-batches-py/data_batch_{i}"
+        # path = f"C:/Users/mshil/PycharmProjects/Semester_03/AlgebricMethods_Course/206574733_208634469/cifar-10-batches-py/data_batch_{i}"
         batch = unpickle(path)
         if i == 1:
             train_set = (batch[b'data'].reshape((len(batch[b'data']), 3, 32, 32)).transpose(0, 2, 3, 1)).astype(
@@ -101,7 +104,8 @@ def load_data():
             train_set = np.concatenate((train_set, train_set_tmp), axis=0)
             train_labels = np.concatenate((train_labels, train_lbls_tmp), axis=0)
 
-    path = f"C:/Users/mshil/PycharmProjects/Semester_03/AlgebricMethods_Course/206574733_208634469/cifar-10-batches-py/test_batch"
+    path = f"C:/Users/nimro/PycharmProjects/algebric methods 095295/206574733_208634469/cifar-10-batches-py/test_batch"
+    # path = f"C:/Users/mshil/PycharmProjects/Semester_03/AlgebricMethods_Course/206574733_208634469/cifar-10-batches-py/test_batch"
     batch = unpickle(path)
     test_set = (batch[b'data'].reshape((len(batch[b'data']), 3, 32, 32)).transpose(0, 2, 3, 1)).astype('float32')
     test_labels = batch[b'labels']
@@ -145,3 +149,15 @@ def calculate_error_rate(test_points, test_labels, predictions):
             missed += 1
     error_rate = missed / test_size
     return error_rate
+
+
+def centralize_data(M):
+    """
+    Centralize the data s.t the mean of all rows is the zero vector
+    :param M: matrix of data
+    :return: centralized data
+    """
+    mean_vec = M.mean(axis=0, keepdims=True)
+    M_mean = M - mean_vec
+    return M_mean
+
